@@ -14,6 +14,10 @@ var _swipeJsIso = require('swipe-js-iso');
 
 var _swipeJsIso2 = _interopRequireDefault(_swipeJsIso);
 
+var _keydown = require('keydown');
+
+var _keydown2 = _interopRequireDefault(_keydown);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -26,9 +30,30 @@ var ReactSwipe = function (_Component) {
     _inherits(ReactSwipe, _Component);
 
     function ReactSwipe() {
+        var _Object$getPrototypeO;
+
+        var _temp, _this, _ret;
+
         _classCallCheck(this, ReactSwipe);
 
-        return _possibleConstructorReturn(this, Object.getPrototypeOf(ReactSwipe).apply(this, arguments));
+        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+        }
+
+        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(ReactSwipe)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.registerHotkeys = function () {
+            _this.hotkeys = [];
+
+            var kdLeft = (0, _keydown2.default)('<left>');
+            _this.hotkeys.push(kdLeft);
+
+            kdLeft.on('pressed', function () {
+                _this.prev();
+            });
+        }, _this.unregisterHotkeys = function () {
+            // this.hotkeys.map(ev => {
+            //     ev.removeAllListeners('pressed');
+            // })
+        }, _temp), _possibleConstructorReturn(_this, _ret);
     }
 
     _createClass(ReactSwipe, [{
@@ -37,6 +62,8 @@ var ReactSwipe = function (_Component) {
             var swipeOptions = this.props.swipeOptions;
 
             this.swipe = (0, _swipeJsIso2.default)(this.refs.container, swipeOptions);
+
+            this.registerHotkeys();
         }
     }, {
         key: 'componentWillUnmount',

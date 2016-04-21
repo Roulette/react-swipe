@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import Swipe from 'swipe-js-iso';
 
+import keydown from 'keydown';
+
 class ReactSwipe extends Component {
     static propTypes = {
         swipeOptions: PropTypes.shape({
@@ -50,12 +52,31 @@ class ReactSwipe extends Component {
     componentDidMount() {
         const { swipeOptions } = this.props;
         this.swipe = Swipe(this.refs.container, swipeOptions);
+
+        this.registerHotkeys();
     }
 
     componentWillUnmount() {
         this.swipe.kill();
         this.swipe = void 0;
     }
+
+    registerHotkeys = () => {
+        this.hotkeys = [];
+
+        const kdLeft = keydown('<left>');
+        this.hotkeys.push(kdLeft);
+
+        kdLeft.on('pressed', () => {
+            this.prev();
+        });
+    };
+
+    unregisterHotkeys = () => {
+        // this.hotkeys.map(ev => {
+        //     ev.removeAllListeners('pressed');
+        // })
+    };
 
     next() {
         this.swipe.next();
