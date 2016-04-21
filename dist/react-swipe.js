@@ -105,6 +105,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	            kdLeft.on('pressed', function () {
 	                _this.prev();
 	            });
+
+	            var kdRight = (0, _keydown2.default)('<right>');
+	            _this.hotkeys.push(kdRight);
+
+	            kdRight.on('pressed', function () {
+	                _this.prev();
+	            });
 	        }, _this.unregisterHotkeys = function () {
 	            // this.hotkeys.map(ev => {
 	            //     ev.removeAllListeners('pressed');
@@ -170,6 +177,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	                    'div',
 	                    { style: style.wrapper },
 	                    _react2.default.Children.map(children, function (child) {
+	                        console.log(child);
+
 	                        return _react2.default.cloneElement(child, { style: style.child });
 	                    })
 	                )

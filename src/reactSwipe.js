@@ -70,6 +70,14 @@ class ReactSwipe extends Component {
         kdLeft.on('pressed', () => {
             this.prev();
         });
+
+
+        const kdRight = keydown('<right>');
+        this.hotkeys.push(kdRight);
+
+        kdRight.on('pressed', () => {
+            this.prev();
+        });
     };
 
     unregisterHotkeys = () => {
@@ -96,7 +104,7 @@ class ReactSwipe extends Component {
 
     getNumSlides() {
         return this.swipe.getNumSlides();
-    }
+    } 
 
     render() {
         const { id, className, style, children } = this.props;
@@ -104,6 +112,8 @@ class ReactSwipe extends Component {
             <div ref="container" id={id} className={`react-swipe-container ${className}`} style={style.container}>
                 <div style={style.wrapper}>
                     {React.Children.map(children, child => {
+                        console.log(child);
+                        
                         return React.cloneElement(child, {style: style.child});
                     })}
                 </div>
