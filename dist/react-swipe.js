@@ -60,6 +60,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    value: true
 	});
 
+	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 	var _react = __webpack_require__(1);
@@ -74,7 +76,13 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _keydown2 = _interopRequireDefault(_keydown);
 
+	var _bowser = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"bowser\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+
+	var _bowser2 = _interopRequireDefault(_bowser);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
@@ -86,37 +94,93 @@ return /******/ (function(modules) { // webpackBootstrap
 	    _inherits(ReactSwipe, _Component);
 
 	    function ReactSwipe() {
-	        var _Object$getPrototypeO;
-
-	        var _temp, _this, _ret;
-
 	        _classCallCheck(this, ReactSwipe);
 
-	        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-	            args[_key] = arguments[_key];
-	        }
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ReactSwipe).call(this));
 
-	        return _ret = (_temp = (_this = _possibleConstructorReturn(this, (_Object$getPrototypeO = Object.getPrototypeOf(ReactSwipe)).call.apply(_Object$getPrototypeO, [this].concat(args))), _this), _this.registerHotkeys = function () {
-	            _this.hotkeys = [];
+	        _this.componentWillMount = function () {
+	            var filteredChildren = _this.filterForImages(_this.props.children, _this.prepareImageForLazyLoad);
 
-	            var kdLeft = (0, _keydown2.default)('<left>');
-	            _this.hotkeys.push(kdLeft);
+	            _this.applyLazyLoadRange(_this.props.swipeOptions.startSlide, {
+	                children: filteredChildren
+	            });
+	        };
 
-	            kdLeft.on('pressed', function () {
-	                _this.prev();
+	        _this.componentDidUpdate = function () {
+	            _this.swipe.setup();
+	        };
+
+	        _this.componentWillReceiveProps = function (props) {
+	            var filteredChildren = _this.filterForImages(props.children, _this.prepareImageForLazyLoad);
+
+	            // //debugger;
+	            _this.applyLazyLoadRange(_this.getPos(), {
+	                children: filteredChildren
+	            });
+	        };
+
+	        _this.sliderChanged = function () {
+	            //update lazy loading
+	            _this.applyLazyLoadRange(_this.getPos());
+
+	            // API to outside world
+
+	            _this.props.sliderChanged && _this.props.sliderChanged(_this.getPos(), _this.getNumSlides());
+	        };
+
+	        _this.next = function () {
+	            _this.swipe.next();
+	        };
+
+	        _this.prev = function () {
+	            _this.swipe.prev();
+	        };
+
+	        _this.slide = function () {
+	            var _this$swipe;
+
+	            (_this$swipe = _this.swipe).slide.apply(_this$swipe, arguments);
+	        };
+
+	        _this.getPos = function () {
+	            if (!_this.swipe) // not initiated yet, (first render)
+	                return _this.props.swipeOptions.startSlide;
+
+	            return _this.swipe.getPos();
+	        };
+
+	        _this.getNumSlides = function () {
+	            if (!_this.swipe) // not initiated yet, (first render)
+	                return _this.props.children.length;
+
+	            return _this.swipe.getNumSlides();
+	        };
+
+	        _this.applyLazyLoadRange = function (currentIndex) {
+	            var state = arguments.length <= 1 || arguments[1] === undefined ? _this.state : arguments[1];
+
+	            var padding = 2;
+
+	            var start = Math.max(currentIndex - padding, 0);
+	            var end = Math.min(state.children.length);
+
+	            var clone = state.children.slice();
+
+	            var childsToUpdate = clone.slice(start, Math.min(state.children.length, currentIndex + 1 + padding));
+
+	            childsToUpdate = childsToUpdate.map(function (tree) {
+	                return _this.filterForImages(tree, _this.executeImageLazyLoad);
 	            });
 
-	            var kdRight = (0, _keydown2.default)('<right>');
-	            _this.hotkeys.push(kdRight);
+	            clone.splice.apply(clone, [start, childsToUpdate.length].concat(_toConsumableArray(childsToUpdate)));
 
-	            kdRight.on('pressed', function () {
-	                _this.prev();
+	            _this.setState({
+	                children: clone
 	            });
-	        }, _this.unregisterHotkeys = function () {
-	            // this.hotkeys.map(ev => {
-	            //     ev.removeAllListeners('pressed');
-	            // })
-	        }, _temp), _possibleConstructorReturn(_this, _ret);
+	        };
+
+	        _this.state = {};
+	        return _this;
 	    }
 
 	    _createClass(ReactSwipe, [{
@@ -124,9 +188,16 @@ return /******/ (function(modules) { // webpackBootstrap
 	        value: function componentDidMount() {
 	            var swipeOptions = this.props.swipeOptions;
 
-	            this.swipe = (0, _swipeJsIso2.default)(this.refs.container, swipeOptions);
+
+	            var mergedOptions = _extends({}, swipeOptions, {
+	                callback: this.sliderChanged
+	            });
+
+	            this.swipe = (0, _swipeJsIso2.default)(this.refs.container, mergedOptions);
 
 	            this.registerHotkeys();
+
+	            typeof this.props.sliderMounted == 'function' && this.props.sliderMounted(this);
 	        }
 	    }, {
 	        key: 'componentWillUnmount',
@@ -135,31 +206,79 @@ return /******/ (function(modules) { // webpackBootstrap
 	            this.swipe = void 0;
 	        }
 	    }, {
-	        key: 'next',
-	        value: function next() {
-	            this.swipe.next();
-	        }
-	    }, {
-	        key: 'prev',
-	        value: function prev() {
-	            this.swipe.prev();
-	        }
-	    }, {
-	        key: 'slide',
-	        value: function slide() {
-	            var _swipe;
+	        key: 'registerHotkeys',
+	        value: function registerHotkeys() {
+	            var _this2 = this;
 
-	            (_swipe = this.swipe).slide.apply(_swipe, arguments);
+	            this.hotkeys = [];
+
+	            var kdLeft = (0, _keydown2.default)('<left>');
+	            this.hotkeys.push(kdLeft);
+
+	            kdLeft.on('pressed', function () {
+	                _this2.prev();
+	            });
+
+	            var kdRight = (0, _keydown2.default)('<right>');
+	            this.hotkeys.push(kdRight);
+
+	            kdRight.on('pressed', function () {
+	                _this2.next();
+	            });
 	        }
 	    }, {
-	        key: 'getPos',
-	        value: function getPos() {
-	            return this.swipe.getPos();
+	        key: 'unregisterHotkeys',
+	        value: function unregisterHotkeys() {
+	            // this.hotkeys.map(ev => {
+	            //     ev.removeAllListeners('pressed');
+	            // })
 	        }
 	    }, {
-	        key: 'getNumSlides',
-	        value: function getNumSlides() {
-	            return this.swipe.getNumSlides();
+	        key: 'filterForImages',
+
+
+	        // first param is the whole vdom tree to be searched, second parameter is a function will get found img as parameter and can return a modified img component
+	        value: function filterForImages(component, fn) {
+	            var filter = function filter(comp) {
+
+	                if (!comp.props || !comp.props.children) return comp;
+
+	                var currentChildren = [];
+	                _react2.default.Children.map(comp.props.children, function (child) {
+
+	                    if (child.type !== 'img') {
+	                        child = filter(child);
+	                        currentChildren.push(child);
+	                    } else currentChildren.push(fn(child));
+	                });
+
+	                return _react2.default.cloneElement(comp, {}, currentChildren);
+	            };
+
+	            return filter(component);
+	        }
+	    }, {
+	        key: 'prepareImageForLazyLoad',
+	        value: function prepareImageForLazyLoad(component) {
+	            if (component.props.lazyLoaded) return component;
+
+	            var src = component.props.src;
+	            return _react2.default.cloneElement(component, {
+	                src: 'http://www.ajaxload.info/cache/FF/FF/FF/00/00/00/1-0.gif', // void 0,
+	                dataSrc: src
+	            });
+	        }
+	    }, {
+	        key: 'executeImageLazyLoad',
+	        value: function executeImageLazyLoad(component) {
+	            if (!component.props.dataSrc) return component;
+
+	            var src = component.props.dataSrc;
+	            return _react2.default.cloneElement(component, {
+	                src: src,
+	                dataSrc: void 0,
+	                lazyLoaded: true
+	            });
 	        }
 	    }, {
 	        key: 'render',
@@ -168,7 +287,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var id = _props.id;
 	            var className = _props.className;
 	            var style = _props.style;
-	            var children = _props.children;
+
 
 	            return _react2.default.createElement(
 	                'div',
@@ -176,11 +295,26 @@ return /******/ (function(modules) { // webpackBootstrap
 	                _react2.default.createElement(
 	                    'div',
 	                    { style: style.wrapper },
-	                    _react2.default.Children.map(children, function (child) {
-	                        console.log(child);
-
+	                    _react2.default.Children.map(this.state.children, function (child) {
 	                        return _react2.default.cloneElement(child, { style: style.child });
 	                    })
+	                ),
+	                !_bowser2.default.mobile && !_bowser2.default.tablet && _react2.default.createElement(
+	                    'button',
+	                    { onClick: this.prev, style: _extends({ left: 0, opacity: this.getPos() === 0 ? 0.2 : 1 }, style.navButton.wrap) },
+	                    _react2.default.createElement(
+	                        'svg',
+	                        { xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 27 44', style: style.navButton.svg },
+	                        _react2.default.createElement('path', { d: 'M0,22L22,0l2.1,2.1L4.2,22l19.9,19.9L22,44L0,22L0,22L0,22z', fill: '#007aff' })
+	                    )
+	                ) && _react2.default.createElement(
+	                    'button',
+	                    { onClick: this.next, style: _extends({ right: 0, opacity: this.getPos() === this.getNumSlides() ? 0.2 : 1 }, style.navButton.wrap) },
+	                    _react2.default.createElement(
+	                        'svg',
+	                        { xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 27 44', style: style.navButton.svg },
+	                        _react2.default.createElement('path', { d: 'M27,22L27,22L5,44l-2.1-2.1L22.8,22L2.9,2.1L5,0L27,22L27,22z', fill: '#007aff' })
+	                    )
 	                )
 	            );
 	        }
@@ -228,6 +362,23 @@ return /******/ (function(modules) { // webpackBootstrap
 	            width: '100%',
 	            position: 'relative',
 	            transitionProperty: 'transform'
+	        },
+
+	        navButton: {
+	            wrap: {
+	                width: '10%',
+	                height: '50%',
+	                background: 'transparent',
+	                boxShadow: 'none',
+	                outline: 'none',
+	                position: 'absolute',
+	                top: '25%'
+	            },
+
+	            svg: {
+	                width: '32px'
+	            }
+
 	        }
 	    },
 	    className: ''

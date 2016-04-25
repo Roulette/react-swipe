@@ -18,7 +18,7 @@
     "type": "git",
     "url": "git://github.com/voronianski/react-swipe.git"
   },
-  "main": "index.js",
+  "main": "dist/react-swipe.js",
   "license": "MIT",
   "devDependencies": {
     "ava": "^0.13.0",
@@ -60,6 +60,8 @@
     "test": "echo \"Comming soon ;)\" && exit 0"
   },
   "dependencies": {
-    "keydown": "0.0.3"
+    "bowser": "^1.0.0",
+    "keydown": "0.0.3",
+    "react-query": "0.0.10"
   }
 }
