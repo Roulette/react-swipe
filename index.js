@@ -123,6 +123,34 @@ var ReactSwipe = function (_Component) {
             });
         };
 
+        _this._renderNavigation = function () {
+            if (_bowser2.default.mobile || _bowser2.default.tablet) return null;
+
+            var _this$props = _this.props;
+            var id = _this$props.id;
+            var className = _this$props.className;
+            var style = _this$props.style;
+
+
+            return [_react2.default.createElement(
+                'button',
+                { onClick: _this.prev, style: _extends({ left: 0, opacity: _this.getPos() === 0 ? 0.2 : 1 }, style.navButton.wrap) },
+                _react2.default.createElement(
+                    'svg',
+                    { xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 27 44', style: style.navButton.svg },
+                    _react2.default.createElement('path', { d: 'M0,22L22,0l2.1,2.1L4.2,22l19.9,19.9L22,44L0,22L0,22L0,22z', fill: '#007aff' })
+                )
+            ), _react2.default.createElement(
+                'button',
+                { onClick: _this.next, style: _extends({ right: 0, opacity: _this.getPos() === _this.getNumSlides() ? 0.2 : 1 }, style.navButton.wrap) },
+                _react2.default.createElement(
+                    'svg',
+                    { xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 27 44', style: style.navButton.svg },
+                    _react2.default.createElement('path', { d: 'M27,22L27,22L5,44l-2.1-2.1L22.8,22L2.9,2.1L5,0L27,22L27,22z', fill: '#007aff' })
+                )
+            )];
+        };
+
         _this.state = {};
         return _this;
     }
@@ -243,23 +271,7 @@ var ReactSwipe = function (_Component) {
                         return _react2.default.cloneElement(child, { style: style.child });
                     })
                 ),
-                !_bowser2.default.mobile && !_bowser2.default.tablet && _react2.default.createElement(
-                    'button',
-                    { onClick: this.prev, style: _extends({ left: 0, opacity: this.getPos() === 0 ? 0.2 : 1 }, style.navButton.wrap) },
-                    _react2.default.createElement(
-                        'svg',
-                        { xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 27 44', style: style.navButton.svg },
-                        _react2.default.createElement('path', { d: 'M0,22L22,0l2.1,2.1L4.2,22l19.9,19.9L22,44L0,22L0,22L0,22z', fill: '#007aff' })
-                    )
-                ) && _react2.default.createElement(
-                    'button',
-                    { onClick: this.next, style: _extends({ right: 0, opacity: this.getPos() === this.getNumSlides() ? 0.2 : 1 }, style.navButton.wrap) },
-                    _react2.default.createElement(
-                        'svg',
-                        { xmlns: 'http://www.w3.org/2000/svg', viewBox: '0 0 27 44', style: style.navButton.svg },
-                        _react2.default.createElement('path', { d: 'M27,22L27,22L5,44l-2.1-2.1L22.8,22L2.9,2.1L5,0L27,22L27,22z', fill: '#007aff' })
-                    )
-                )
+                this._renderNavigation()
             );
         }
     }]);

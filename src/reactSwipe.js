@@ -264,6 +264,22 @@ class ReactSwipe extends Component {
     }
 
 
+    _renderNavigation = ()=> {
+        if(browser.mobile || browser.tablet)
+            return null;
+
+        const { id, className, style } = this.props;
+
+        return [
+            <button onClick={this.prev} style={Object.assign({left: 0, opacity: this.getPos() === 0 ? 0.2 : 1},style.navButton.wrap)}>
+            <svg  xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27 44' style={style.navButton.svg}><path d='M0,22L22,0l2.1,2.1L4.2,22l19.9,19.9L22,44L0,22L0,22L0,22z' fill='#007aff'/></svg>
+            </button>,
+            <button onClick={this.next} style={Object.assign({right: 0, opacity: this.getPos() === this.getNumSlides() ? 0.2 : 1},style.navButton.wrap)}>
+                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27 44' style={style.navButton.svg}><path d='M27,22L27,22L5,44l-2.1-2.1L22.8,22L2.9,2.1L5,0L27,22L27,22z' fill='#007aff'/></svg>
+            </button>
+        ]
+    }
+
     render() {
         const { id, className, style } = this.props;
 
@@ -277,18 +293,7 @@ class ReactSwipe extends Component {
                     })}
                 </div>
 
-            {!browser.mobile && !browser.tablet
-                &&
-            <button onClick={this.prev} style={Object.assign({left: 0, opacity: this.getPos() === 0 ? 0.2 : 1},style.navButton.wrap)}>
-                <svg  xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27 44' style={style.navButton.svg}><path d='M0,22L22,0l2.1,2.1L4.2,22l19.9,19.9L22,44L0,22L0,22L0,22z' fill='#007aff'/></svg>
-            </button>
-                &&
-            <button onClick={this.next} style={Object.assign({right: 0, opacity: this.getPos() === this.getNumSlides() ? 0.2 : 1},style.navButton.wrap)}>
-                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27 44' style={style.navButton.svg}><path d='M27,22L27,22L5,44l-2.1-2.1L22.8,22L2.9,2.1L5,0L27,22L27,22z' fill='#007aff'/></svg>
-            </button>
-            } 
-
-
+            {this._renderNavigation()}
 
             </div>
         );
