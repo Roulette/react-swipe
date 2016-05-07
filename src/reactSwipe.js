@@ -245,7 +245,7 @@ class ReactSwipe extends Component {
         let src =  component.props.src;
         return React.cloneElement(component,
             {
-                src: 'http://www.ajaxload.info/cache/FF/FF/FF/00/00/00/1-0.gif', // void 0,
+                src: void 0,
                 dataSrc: src
             });
     }
