@@ -236,7 +236,7 @@ var ReactSwipe = function (_Component) {
 
             var src = component.props.src;
             return _react2.default.cloneElement(component, {
-                src: 'http://www.ajaxload.info/cache/FF/FF/FF/00/00/00/1-0.gif', // void 0,
+                src: void 0,
                 dataSrc: src
             });
         }
@@ -328,7 +328,8 @@ ReactSwipe.defaultProps = {
                 boxShadow: 'none',
                 outline: 'none',
                 position: 'absolute',
-                top: '25%'
+                top: '25%',
+                border: 'none'
             },
 
             svg: {

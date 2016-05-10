@@ -55,7 +55,8 @@ class ReactSwipe extends Component {
                     boxShadow: 'none',
                     outline: 'none',
                     position: 'absolute',
-                    top:   '25%'
+                    top:   '25%',
+                    border: 'none'
                 },
                 
                 svg: {
@@ -105,7 +106,7 @@ class ReactSwipe extends Component {
     componentDidUpdate = () => {
         this.swipe.setup();
 
-    }
+    };
     componentWillReceiveProps = (props ) => {
         let filteredChildren = this.filterForImages(props.children, this.prepareImageForLazyLoad);
 
