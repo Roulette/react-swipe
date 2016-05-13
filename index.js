@@ -43,10 +43,10 @@ var ReactSwipe = function (_Component) {
         var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ReactSwipe).call(this));
 
         _this.componentWillMount = function () {
-            var filteredChildren = _this.filterForImages(_this.props.children, _this.prepareImageForLazyLoad);
+            var filteredChildren = _this.filterForImages(_this, _this.prepareImageForLazyLoad);
 
             _this.applyLazyLoadRange(_this.props.swipeOptions.startSlide, {
-                children: filteredChildren
+                children: filteredChildren.props.children
             });
         };
 

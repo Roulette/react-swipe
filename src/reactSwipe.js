@@ -58,7 +58,7 @@ class ReactSwipe extends Component {
                     top:   '25%',
                     border: 'none'
                 },
-                
+
                 svg: {
                     width: '32px'
                 }
@@ -71,22 +71,22 @@ class ReactSwipe extends Component {
     constructor() {
         super();
 
-        this.state = {}
+        this.state = {};
     }
 
     componentDidMount() {
-        const  { swipeOptions } = this.props;
+        const { swipeOptions } = this.props;
 
         const mergedOptions = Object.assign({}, swipeOptions, {
             callback: this.sliderChanged
-        })
-        
+        });
+
         this.swipe = Swipe(this.refs.container, mergedOptions);
 
 
         this.registerHotkeys();
 
-        typeof this.props.sliderMounted  == 'function' && this.props.sliderMounted(this);
+        typeof this.props.sliderMounted == 'function' && this.props.sliderMounted(this);
     }
 
     componentWillUnmount() {
@@ -95,11 +95,11 @@ class ReactSwipe extends Component {
     }
 
     componentWillMount = () => {
-        let filteredChildren = this.filterForImages(this.props.children, this.prepareImageForLazyLoad);
-        
+        let filteredChildren = this.filterForImages(this, this.prepareImageForLazyLoad);
+
         this.applyLazyLoadRange(this.props.swipeOptions.startSlide, {
-                children: filteredChildren
-            });
+            children: filteredChildren.props.children
+        });
 
     }
 
@@ -107,7 +107,7 @@ class ReactSwipe extends Component {
         this.swipe.setup();
 
     };
-    componentWillReceiveProps = (props ) => {
+    componentWillReceiveProps = (props) => {
         let filteredChildren = this.filterForImages(props.children, this.prepareImageForLazyLoad);
 
         // //debugger;
@@ -117,7 +117,7 @@ class ReactSwipe extends Component {
 
     }
 
-    registerHotkeys()  {
+    registerHotkeys() {
         this.hotkeys = [];
 
 
@@ -139,13 +139,13 @@ class ReactSwipe extends Component {
         });
 
 
-    };
+    }
 
     unregisterHotkeys() {
         // this.hotkeys.map(ev => {
         //     ev.removeAllListeners('pressed');
         // })
-    };
+    }
 
     sliderChanged = () => {
         //update lazy loading
@@ -166,20 +166,20 @@ class ReactSwipe extends Component {
         this.swipe.prev();
     }
 
-    slide  = (...args) => {
+    slide = (...args) => {
         this.swipe.slide(...args);
     }
 
-    getPos  = () => {
-        if(!this.swipe) // not initiated yet, (first render)
+    getPos = () => {
+        if (!this.swipe) // not initiated yet, (first render)
             return this.props.swipeOptions.startSlide;
 
         return this.swipe.getPos();
     }
 
-    getNumSlides  = () => {
-        if(!this.swipe) // not initiated yet, (first render)
-            return this.props.children.length
+    getNumSlides = () => {
+        if (!this.swipe) // not initiated yet, (first render)
+            return this.props.children.length;
 
         return this.swipe.getNumSlides();
     }
@@ -190,28 +190,28 @@ class ReactSwipe extends Component {
         const filter = (comp) => {
 
 
-            if(!comp.props || !comp.props.children)
+            if (!comp.props || !comp.props.children)
                 return comp;
-            
 
-            
+
+
             let currentChildren = [];
             React.Children.map(comp.props.children, child => {
-                
-                if(child.type !== 'img') {
-                    child =  filter(child);
+
+                if (child.type !== 'img') {
+                    child = filter(child);
                     currentChildren.push(child);
                 }
 
                 else
-                    currentChildren.push(fn(child))
+                    currentChildren.push(fn(child));
 
             });
 
 
-            
-            return React.cloneElement(comp,{}, currentChildren);
-        }
+
+            return React.cloneElement(comp, {}, currentChildren);
+        };
 
         return filter(component);
     }
@@ -220,15 +220,15 @@ class ReactSwipe extends Component {
     applyLazyLoadRange = (currentIndex, state = this.state) => {
         const padding = 2;
 
-        const start =  Math.max(currentIndex - padding, 0);
-        const end = Math.min(state.children.length)
-        
+        const start = Math.max(currentIndex - padding, 0);
+        const end = Math.min(state.children.length);
+
 
         let clone = state.children.slice();
 
-        let childsToUpdate = clone.slice(start, Math.min(state.children.length, currentIndex + 1 + padding) );
+        let childsToUpdate = clone.slice(start, Math.min(state.children.length, currentIndex + 1 + padding));
 
-        childsToUpdate = childsToUpdate.map(tree => this.filterForImages(tree,this.executeImageLazyLoad));
+        childsToUpdate = childsToUpdate.map(tree => this.filterForImages(tree, this.executeImageLazyLoad));
 
 
 
@@ -237,13 +237,13 @@ class ReactSwipe extends Component {
 
         this.setState({
             children: clone
-        })
+        });
     }
     prepareImageForLazyLoad(component) {
-        if(component.props.lazyLoaded)
+        if (component.props.lazyLoaded)
             return component;
 
-        let src =  component.props.src;
+        let src = component.props.src;
         return React.cloneElement(component,
             {
                 src: void 0,
@@ -251,11 +251,11 @@ class ReactSwipe extends Component {
             });
     }
     executeImageLazyLoad(component) {
-        if(!component.props.dataSrc)
+        if (!component.props.dataSrc)
             return component;
 
 
-        let src =  component.props.dataSrc;
+        let src = component.props.dataSrc;
         return React.cloneElement(component,
             {
                 src,
@@ -265,20 +265,20 @@ class ReactSwipe extends Component {
     }
 
 
-    _renderNavigation = ()=> {
-        if(browser.mobile || browser.tablet)
+    _renderNavigation = () => {
+        if (browser.mobile || browser.tablet)
             return null;
 
         const { id, className, style } = this.props;
 
         return [
-            <button onClick={this.prev} style={Object.assign({left: 0, opacity: this.getPos() === 0 ? 0.2 : 1},style.navButton.wrap)}>
-            <svg  xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27 44' style={style.navButton.svg}><path d='M0,22L22,0l2.1,2.1L4.2,22l19.9,19.9L22,44L0,22L0,22L0,22z' fill='#007aff'/></svg>
+            <button onClick={this.prev} style={Object.assign({left: 0, opacity: this.getPos() === 0 ? 0.2 : 1}, style.navButton.wrap)}>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 44" style={style.navButton.svg}><path d="M0,22L22,0l2.1,2.1L4.2,22l19.9,19.9L22,44L0,22L0,22L0,22z" fill="#007aff"/></svg>
             </button>,
-            <button onClick={this.next} style={Object.assign({right: 0, opacity: this.getPos() === this.getNumSlides() ? 0.2 : 1},style.navButton.wrap)}>
-                <svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 27 44' style={style.navButton.svg}><path d='M27,22L27,22L5,44l-2.1-2.1L22.8,22L2.9,2.1L5,0L27,22L27,22z' fill='#007aff'/></svg>
+            <button onClick={this.next} style={Object.assign({right: 0, opacity: this.getPos() === this.getNumSlides() ? 0.2 : 1}, style.navButton.wrap)}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 44" style={style.navButton.svg}><path d="M27,22L27,22L5,44l-2.1-2.1L22.8,22L2.9,2.1L5,0L27,22L27,22z" fill="#007aff"/></svg>
             </button>
-        ]
+        ];
     }
 
     render() {
