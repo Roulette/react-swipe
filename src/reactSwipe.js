@@ -108,11 +108,11 @@ class ReactSwipe extends Component {
 
     };
     componentWillReceiveProps = (props) => {
-        let filteredChildren = this.filterForImages(props.children, this.prepareImageForLazyLoad);
+        let filteredChildren = this.filterForImages({props}, this.prepareImageForLazyLoad);
 
         // //debugger;
         this.applyLazyLoadRange(this.getPos(), {
-            children: filteredChildren
+            children: filteredChildren.props.children // todo: this removes the already loaded images and they have to be fetched again. 
         });
 
     }

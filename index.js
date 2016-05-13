@@ -55,11 +55,11 @@ var ReactSwipe = function (_Component) {
         };
 
         _this.componentWillReceiveProps = function (props) {
-            var filteredChildren = _this.filterForImages(props.children, _this.prepareImageForLazyLoad);
+            var filteredChildren = _this.filterForImages({ props: props }, _this.prepareImageForLazyLoad);
 
             // //debugger;
             _this.applyLazyLoadRange(_this.getPos(), {
-                children: filteredChildren
+                children: filteredChildren.props.children // todo: this removes the already loaded images and they have to be fetched again.
             });
         };
 
