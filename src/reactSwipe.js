@@ -89,7 +89,8 @@ class ReactSwipe extends Component {
         typeof this.props.sliderMounted == 'function' && this.props.sliderMounted(this);
     }
 
-    componentWillUnmount() {
+    componentWillUnmount = () => {
+        this.unregisterHotkeys();
         this.swipe.kill();
         this.swipe = void 0;
     }
@@ -141,10 +142,13 @@ class ReactSwipe extends Component {
 
     }
 
-    unregisterHotkeys() {
-        // this.hotkeys.map(ev => {
-        //     ev.removeAllListeners('pressed');
-        // })
+    unregisterHotkeys = () => {
+      if (! this.hotkeys instanceof Array)
+        return;
+        
+      this.hotkeys.map(ev => {
+          ev.removeAllListeners('pressed');
+      })
     }
 
     sliderChanged = () => {

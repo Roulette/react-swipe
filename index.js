@@ -40,7 +40,13 @@ var ReactSwipe = function (_Component) {
     function ReactSwipe() {
         _classCallCheck(this, ReactSwipe);
 
-        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(ReactSwipe).call(this));
+        var _this = _possibleConstructorReturn(this, (ReactSwipe.__proto__ || Object.getPrototypeOf(ReactSwipe)).call(this));
+
+        _this.componentWillUnmount = function () {
+            _this.unregisterHotkeys();
+            _this.swipe.kill();
+            _this.swipe = void 0;
+        };
 
         _this.componentWillMount = function () {
             var filteredChildren = _this.filterForImages(_this, _this.prepareImageForLazyLoad);
@@ -59,7 +65,15 @@ var ReactSwipe = function (_Component) {
 
             // //debugger;
             _this.applyLazyLoadRange(_this.getPos(), {
-                children: filteredChildren.props.children // todo: this removes the already loaded images and they have to be fetched again.
+                children: filteredChildren.props.children // todo: this removes the already loaded images and they have to be fetched again. 
+            });
+        };
+
+        _this.unregisterHotkeys = function () {
+            if (!_this.hotkeys instanceof Array) return;
+
+            _this.hotkeys.map(function (ev) {
+                ev.removeAllListeners('pressed');
             });
         };
 
@@ -68,6 +82,7 @@ var ReactSwipe = function (_Component) {
             _this.applyLazyLoadRange(_this.getPos());
 
             // API to outside world
+
 
             _this.props.sliderChanged && _this.props.sliderChanged(_this.getPos(), _this.getNumSlides());
         };
@@ -101,7 +116,7 @@ var ReactSwipe = function (_Component) {
         };
 
         _this.applyLazyLoadRange = function (currentIndex) {
-            var state = arguments.length <= 1 || arguments[1] === undefined ? _this.state : arguments[1];
+            var state = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : _this.state;
 
             var padding = 2;
 
@@ -126,10 +141,10 @@ var ReactSwipe = function (_Component) {
         _this._renderNavigation = function () {
             if (_bowser2.default.mobile || _bowser2.default.tablet) return null;
 
-            var _this$props = _this.props;
-            var id = _this$props.id;
-            var className = _this$props.className;
-            var style = _this$props.style;
+            var _this$props = _this.props,
+                id = _this$props.id,
+                className = _this$props.className,
+                style = _this$props.style;
 
 
             return [_react2.default.createElement(
@@ -172,12 +187,6 @@ var ReactSwipe = function (_Component) {
             typeof this.props.sliderMounted == 'function' && this.props.sliderMounted(this);
         }
     }, {
-        key: 'componentWillUnmount',
-        value: function componentWillUnmount() {
-            this.swipe.kill();
-            this.swipe = void 0;
-        }
-    }, {
         key: 'registerHotkeys',
         value: function registerHotkeys() {
             var _this2 = this;
@@ -197,13 +206,6 @@ var ReactSwipe = function (_Component) {
             kdRight.on('pressed', function () {
                 _this2.next();
             });
-        }
-    }, {
-        key: 'unregisterHotkeys',
-        value: function unregisterHotkeys() {
-            // this.hotkeys.map(ev => {
-            //     ev.removeAllListeners('pressed');
-            // })
         }
     }, {
         key: 'filterForImages',
@@ -255,10 +257,10 @@ var ReactSwipe = function (_Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _props = this.props;
-            var id = _props.id;
-            var className = _props.className;
-            var style = _props.style;
+            var _props = this.props,
+                id = _props.id,
+                className = _props.className,
+                style = _props.style;
 
 
             return _react2.default.createElement(
