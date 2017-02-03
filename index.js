@@ -57,7 +57,7 @@ var ReactSwipe = function (_Component) {
         };
 
         _this.componentDidUpdate = function () {
-            _this.swipe.setup();
+            _this.swipe && _this.swipe.setup();
         };
 
         _this.componentWillReceiveProps = function (props) {
@@ -88,17 +88,17 @@ var ReactSwipe = function (_Component) {
         };
 
         _this.next = function () {
-            _this.swipe.next();
+            _this.swipe && _this.swipe.next();
         };
 
         _this.prev = function () {
-            _this.swipe.prev();
+            _this.swipe && _this.swipe.prev();
         };
 
         _this.slide = function () {
             var _this$swipe;
 
-            (_this$swipe = _this.swipe).slide.apply(_this$swipe, arguments);
+            _this.swipe && (_this$swipe = _this.swipe).slide.apply(_this$swipe, arguments);
         };
 
         _this.getPos = function () {

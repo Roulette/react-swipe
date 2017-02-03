@@ -105,7 +105,7 @@ class ReactSwipe extends Component {
     }
 
     componentDidUpdate = () => {
-        this.swipe.setup();
+        this.swipe && this.swipe.setup();
 
     };
     componentWillReceiveProps = (props) => {
@@ -163,15 +163,15 @@ class ReactSwipe extends Component {
     }
 
     next = () => {
-        this.swipe.next();
+        this.swipe && this.swipe.next();
     }
 
     prev = () => {
-        this.swipe.prev();
+        this.swipe && this.swipe.prev();
     }
 
     slide = (...args) => {
-        this.swipe.slide(...args);
+        this.swipe && this.swipe.slide(...args);
     }
 
     getPos = () => {
